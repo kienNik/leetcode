@@ -9,25 +9,26 @@ public:
         vector<vector<int>> dp(len1 + 1, vector<int>(len2 + 1));
 
         for (int i = 0; i <= len1; ++i) {
-            dp[i][0] = i;
+            dp[i][len2] = len1 - i;
         }
         for (int j = 0; j <= len2; ++j) {
-            dp[0][j] = j;
+            dp[len1][j] = len2 - j;
         }
 
-        for (int i = 1; i <= len1; ++i) {
-            for (int j = 1; j <= len2; ++j) {
-                if (word1[i - 1] == word2[j - 1]) {
-                    dp[i][j] = dp[i - 1][j - 1];
+        for (int i = len1 - 1; i >= 0; --i) {
+            for (int j = len2 - 1; j >= 0; --j) {
+                if (word1[i] == word2[j]) {
+                    dp[i][j] = dp[i+1][j+1];
                 } else {
-                    auto use_convert = dp[i - 1][j - 1] + 1;
-                    auto use_delete = dp[i - 1][j] + 1;
-                    auto use_insert = dp[i][j - 1] + 1;
-                    dp[i][j] = min({use_convert, use_delete, use_insert});
+                    int insert = dp[i][j+1] + 1;
+                    int erase = dp[i+1][j] + 1;
+                    int replace = dp[i+1][j+1] + 1;
+                    dp[i][j] = min({insert, erase, replace});
                 }
             }
         }
-        return dp[len1][len2];
+        
+        return dp[0][0];
     }
 };
 
